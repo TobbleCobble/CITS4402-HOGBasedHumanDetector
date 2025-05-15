@@ -1,0 +1,1 @@
+Project Requires `testing/human`, `testing/non-human`, `training/human` and `training/non-human` directories
