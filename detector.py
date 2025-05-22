@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import os
-from sklearn.metrics import precision_recall_curve, PrecisionRecallDisplay, accuracy_score
+from sklearn.metrics import precision_recall_curve, PrecisionRecallDisplay, accuracy_score, DetCurveDisplay
 import matplotlib.pyplot as plt
 import time
 
@@ -122,23 +122,74 @@ def test_svm(svm):
     accuracy = accuracy_score(y_true, y_binary)
     print(f"Accuracy: {accuracy}")
     precision, recall, thresholds = precision_recall_curve(y_true, y_pred)
-    PrecisionRecallDisplay.from_predictions(y_true, y_pred)
+    disp = PrecisionRecallDisplay.from_predictions(y_true, y_pred)
 
 
-    plt.show()
-    return accuracy
+    #plt.show()
+    return accuracy, disp
 
-def test_image(svm, img_path):
-    hog = []
-    if os.path.isfile(img_path):
-        im = cv2.imread(img_path)
-        gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-        hog.append(get_hog(gray))
+def test_images(svm, folder):
+    x_test = []
 
-    hog = np.asmatrix(hog)
-    _, y_pred = svm.predict(hog)
-    return y_pred[0]
+    path = folder
+    dirs = os.listdir(path)
+
+    filenames = []
+
+    for item in dirs:
+        fullpath = os.path.join(path, item)
+        if os.path.isfile(fullpath):
+            im = cv2.imread(fullpath)
+            gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+            x_test.append(get_hog(gray))
+            filenames.append(item)
+            
+
+    x_test = np.asmatrix(x_test)
+    _, y_pred = svm.predict(x_test)
+    return y_pred, filenames
 
 if __name__ == '__main__':
+    
+    ## for ablation study
+
+    nbins = 3
+
+    hogDesc = cv2.HOGDescriptor(
+        image_size,
+        block_size,
+        cell_size,
+        cell_size,
+        nbins
+    )
+
+    #svm = create_svm()
+    #accuracy_1, disp_1 = test_svm(svm)
+
+    nbins = 9
+
+    hogDesc = cv2.HOGDescriptor(
+        image_size,
+        block_size,
+        cell_size,
+        cell_size,
+        nbins
+    )
+    
     svm = create_svm()
-    test_svm(svm)
+    accuracy_2, disp_2 = test_svm(svm)
+
+    nbins = 24
+
+    hogDesc = cv2.HOGDescriptor(
+        image_size,
+        block_size,
+        cell_size,
+        cell_size,
+        nbins
+    )
+    
+    #svm = create_svm()
+    #accuracy_3, disp_3 = test_svm(svm)
+
+    plt.show()
