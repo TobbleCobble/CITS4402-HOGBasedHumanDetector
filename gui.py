@@ -9,7 +9,6 @@ import detector
 root = tk.Tk()
 
 svm = cv2.ml.SVM.load("base_detector.xml")
-#print(detector.test_images(svm, "testing/human/413_0.png"))
 
 filenames = []
 predictions = []
