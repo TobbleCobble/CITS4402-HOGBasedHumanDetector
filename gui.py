@@ -15,9 +15,8 @@ predictions = []
 index = 0
 folder = ""
 
-#df = DataFrame({'filename': filenames, 'prediction': predictions})
-
 def test_images(folder):
+    print("testing images")
     prediction, path = detector.test_images(svm, folder)
     prediction = list(prediction.ravel())
 

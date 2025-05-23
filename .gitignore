@@ -1,3 +1,9 @@
-*.png
 *.jpg
-*.xlsx
+
+/*.png
+
+testing/
+training/
+samplecase/
+samplecase_2/
+
